@@ -4,7 +4,10 @@ from category.models import Category
 
 
 
+from django.contrib.auth import get_user_model
 
+
+User=get_user_model()
 
 
 class Recipe(models.Model):
@@ -24,18 +27,18 @@ class Recipe(models.Model):
         return self.title
 
 class Comments(models.Model):
-    owner=models.ForeignKey('account.CustomUser',
-    related_name='comments', on_delete=models.CASCADE)
+    
+    user=models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     post=models.ForeignKey(Recipe, related_name='comments',on_delete=models.CASCADE)
     body=models.TextField()
     created_at=models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return f'{self.owner} -> {self.created_at}'
+        return f'{self.user} -> {self.created_at}'
 
 
 class Likes(models.Model):
     post=models.ForeignKey(Recipe, on_delete=models.CASCADE,related_name='likes')
-    owner=models.ForeignKey('account.CustomUser',on_delete=models.CASCADE,related_name='liked')
+    user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='liked')
 
     class Meta:
-        unique_together=['post','owner']
+        unique_together=['post','user']

@@ -12,9 +12,15 @@ class RecipeListSerializer(serializers.ModelSerializer):
     #     repr= super().to_representation(instance)
     #     repr['rating']=instance.reviews.aggregate(Avg('rating'))['rating__avg']
     
-
+class CommentSerilizer(serializers.ModelSerializer):
+    user=serializers.ReadOnlyField(source='user.email')
+    class Meta:
+        model=Comments
+        fields=('user', 'body','post')
 
 class RecipeDetailSerializer(serializers.ModelSerializer):
+    comments = CommentSerilizer(many=True, read_only=True)
+    
     class Meta:
         model=Recipe
         fields='__all__'
@@ -27,11 +33,13 @@ class RecipeDetailSerializer(serializers.ModelSerializer):
         repr['reviews']=instance.reviews.count()
         return repr
 
-class CommentSerilizer(serializers.ModelSerializer):
-    owner=serializers.ReadOnlyField(source='owner.username')
-    class Meta:
-        model=Comments
-        fields=('id','body','owner','post')
+
+    def to_representation(self, instance):
+        repr=super().to_representation(instance)
+        repr['likes']=instance.likes.count()
+        return repr
+
+
 
 class PostCreateSerializer(serializers.ModelSerializer):
     # owner = serializers.ReadOnlyField(source='owner.username')
@@ -54,7 +62,7 @@ class PostCreateSerializer(serializers.ModelSerializer):
         return created_post
 
 class LikeSerializer(serializers.ModelSerializer):
-    owner=serializers.ReadOnlyField(source='owner.username')
+    # user=serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model=Likes
-        fields=('owner',)
+        fields=('user',)

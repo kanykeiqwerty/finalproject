@@ -65,7 +65,7 @@ class ProductViewSet(ModelViewSet):
         if request.user.liked.filter(post=post).exists():
             # request.user.liked.filter(post=post).delete()
             return Response('Вы уже лайкнули этот пост',status=400)
-        Likes.objects.create(post=post,owner=request.user)
+        Likes.objects.create(post=post,user=request.user)
         return Response('Вы поставили лайк', status=201)
 
     #api/v1/posts/<id>/remove_from_liked
@@ -92,7 +92,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
     permission_classes=(permissions.IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(user=self.request.user)
 
 class  CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Comments.objects.all()

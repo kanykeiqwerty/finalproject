@@ -53,6 +53,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(router.urls)),
     path('api/v1/account/', include('account.urls')),
+    path('api/v1/', include('recipe.urls')),
     # path('api/v1/cart/', CartApiView.as_view()),
     # path('api/v1/order/', include('order.urls'))
 ]
