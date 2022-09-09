@@ -9,7 +9,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from django.contrib.auth import get_user_model
 from . import serializers
-from .send_email import send_confirmation_email
+from .send_email import send_confirmation_email, send_reset_password
 
 
 class StandartResultsPagination(PageNumberPagination):
@@ -65,3 +65,31 @@ class LogoutApiView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response('Successfully loged out', status=204)
+
+
+
+class ForgotPasswordView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        serializer = serializers.ForgotPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            user = User.objects.get(email=serializer.data.get('email'))
+            user.create_activation_code()
+            user.save()
+            send_reset_password(user)
+            return Response('Check your mail!', status=200)
+        except User.DoesNotExist:
+            return Response('User with this email does not exist!', status=400)
+
+
+class RestorePasswordView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        serializer = serializers.RestorePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response('Password changed successfully!', status=200)
+

@@ -8,5 +8,11 @@ urlpatterns = [
     path('login/', views.LoginApiView.as_view()),
     path('logout/', views.LogoutApiView.as_view()),
     path('refresh/', TokenRefreshView.as_view()),
+    path('forgot/', views.ForgotPasswordView.as_view()),
+    path('restore/', views.RestorePasswordView.as_view()),
+    
+
+    # pathot/', views.ForgotPasswordView.as_view()),
+    # path('restore('forg/', views.RestorePasswordView.as_view()),
 ]
 

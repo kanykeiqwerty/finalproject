@@ -43,7 +43,7 @@ schema_view = get_schema_view(
 
 
 router=SimpleRouter()
-router.register('recipes', ProductViewSet)
+router.register('posts', ProductViewSet)
 router.register('categories', CategoryViewSet)
 
 urlpatterns = [

@@ -21,10 +21,10 @@ class StandartResultsPagination(PageNumberPagination):
 
 
 class ProductViewSet(ModelViewSet):
-    queryset=Recipe.objects.all()
+    queryset=Post.objects.all()
     permission_classes=[permissions.IsAuthenticatedOrReadOnly]
     filter_backends=(DjangoFilterBackend,SearchFilter)
-    filterset_fields=('category',)
+    filterset_fields=('tag',)
     search_fields=('title',)
     pagination_class=StandartResultsPagination
 
@@ -32,20 +32,20 @@ class ProductViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         if self.action=='list':
-            return serializers.RecipeListSerializer
+            return serializers.PostListSerializer
 
         return serializers.RecipeDetailSerializer
 
     #api/v1/products/<id>/reviews/
     @action(['GET', 'POST'], detail=True)
     def reviews(self, request, pk=None):
-        recipe=self.get_object()
+        post=self.get_object()
         if request.method=='GET':
-            reviews=recipe.reviews.all()
+            reviews=post.reviews.all()
             serializer=ReviewSerializer(reviews, many=True).data
             return response.Response(serializer, status=200)
         data=request.data
-        serializer=ReviewSerializer(data=data, context={'request':request, 'recipe':recipe})
+        serializer=ReviewSerializer(data=data, context={'request':request, 'post':post})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return response.Response(serializer.data, status=201)
@@ -84,6 +84,19 @@ class ProductViewSet(ModelViewSet):
         likes=post.likes.all()
         serializer=serializers.LikeSerializer(likes,many=True)
         return Response(serializer.data,status=200)
+
+
+    # api/v1/posts/<id>/favorite_action/
+    @action(['POST'], detail=True)
+    def favorite_action(self, request, pk):
+        post = self.get_object()
+        if request.user.favorites.filter(post=post).exists():
+            request.user.favorites.filter(post=post).delete()
+            return Response('Убрали из избранных!', status=204)
+        Favorites.objects.create(post=post, user=request.user)
+        return Response('Добавлено в избранное!', status=201)
+
+
 
 
 class CommentListCreateView(generics.ListCreateAPIView):
