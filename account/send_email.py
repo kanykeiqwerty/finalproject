@@ -24,15 +24,12 @@ def send_reset_password(user):
     )
 
 
-def send_html_email():
-    from django.template.loader import render_to_string
-    post =Post.objects.all()[0]
-    html_message=render_to_string('f.html', {'name':post.title, 'desc':post.description})
+def send_notification(user, id):
+    to_email = user.email
     send_mail(
-        'Subject', 
-        'letter', 
-        'example@admin.com', 
-        ['ghjvgyjvgyj@gmail.com'], 
-        html_message=html_message, 
+        'Увежомление о создании заказа!!',
+        f'Вы создали заказ №{id}, ожидайте звонка!!',
+        'from@example.com',
+        [to_email,],
         fail_silently=False
     )

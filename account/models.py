@@ -3,7 +3,6 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
-
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -62,4 +61,6 @@ class CustomUser(AbstractUser):
         self.activation_code = code
 
 
+class Contact(models.Model):
+    email = models.EmailField('email address', unique=True)
 

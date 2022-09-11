@@ -93,3 +93,11 @@ class RestorePasswordView(APIView):
         serializer.save()
         return Response('Password changed successfully!', status=200)
 
+class FollowSpamApi(APIView):
+    permission_classes=(permissions.AllowAny,)
+    def post(self, request):
+        serializer = serializers.SpamViewSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        # send_html_email()
+        return Response('Followed to spam', status=200)
