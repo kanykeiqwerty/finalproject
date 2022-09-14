@@ -32,6 +32,7 @@ class RecipeDetailSerializer(serializers.ModelSerializer):
         repr['rating']=instance.reviews.aggregate(Avg('rating'))['rating__avg']
         repr['reviews']=instance.reviews.count()
         repr['likes']=instance.likes.count()
+        repr['favorites']=instance.favorites.count()
         return repr
 
 

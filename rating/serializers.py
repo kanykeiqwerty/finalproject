@@ -5,7 +5,7 @@ from . models import Review
 
 class ReviewSerializer(serializers.ModelSerializer):
     user=serializers.ReadOnlyField(source='user.email')
-    recipe=serializers.ReadOnlyField(source='post.title')
+    post=serializers.ReadOnlyField(source='post.title')
     class Meta:
         model=Review
         fields='__all__'
@@ -13,7 +13,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request=self.context.get('request')
         user=request.user
-        post=self.context.get('recipe')
+        post=self.context.get('post')
         validated_data['user']=user
         validated_data['post']=post
         return super().create(validated_data)

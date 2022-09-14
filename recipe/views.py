@@ -15,7 +15,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
 
 class StandartResultsPagination(PageNumberPagination):
-    page_size=5
+    page_size=2
     page_query_param='page'
     max_page_size=1000
 
@@ -56,6 +56,7 @@ class ProductViewSet(ModelViewSet):
         post=self.get_object()
         comments=post.comments.all()
         serializer=serializers.CommentSerilizer(comments,many=True)
+        # pagination_class = StandartResultsPagination
         return Response(serializer.data,status=200)
     
     # api/v1/posts/<id>/add_to_liked/
